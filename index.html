@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Under Construction</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0d1117; overflow: hidden; }
+  canvas { display: block; position: absolute; top: 0; left: 0; }
+  #overlay {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none; z-index: 1;
+  }
+  #overlay h1 {
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: clamp(1.5rem, 4vw, 3rem);
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    color: rgba(255, 255, 255, 0.55);
+    text-transform: uppercase;
+  }
+  #stats {
+    position: absolute; bottom: 8px; left: 8px; z-index: 2;
+    font-family: 'SF Mono', 'Consolas', monospace; font-size: 11px;
+    color: rgba(255,255,255,0.6); background: rgba(0,0,0,0.45);
+    padding: 6px 10px; border-radius: 4px; line-height: 1.5;
+    pointer-events: none; display: none;
+  }
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="overlay"><h1>Under Construction</h1></div>
+<div id="stats"></div>
+<script>
+'use strict';
+
+/*
+ * ══════════════════════════════════════════════════════════════════
+ *  Neural Network Landing Page — Tuning Guide
+ * ══════════════════════════════════════════════════════════════════
+ *
+ *  SPECTRUM (12 RGB triplets)
+ *    Spectral palette — each cluster gets its own hue, evenly spaced
+ *    around the color wheel (HSL). Pulses, glows, edges, and static
+ *    nodes all carry their cluster's color.
+ *
+ *  BG ('#0d1117')
+ *    Background color. Dark values work best for contrast.
+ *
+ *  NODE_SCALE (0.15)
+ *    Multiplied by sqrt(screen area in px) to get node count.
+ *    Square-root scaling keeps small screens dense enough to look
+ *    like a network while preventing large screens from overloading.
+ *    0.10 = sparse, 0.20 = dense. Min node count is 40.
+ *
+ *  NEIGHBORS (7)
+ *    Intra-cluster connections per node: (NEIGHBORS-1) nearest neighbors
+ *    within the same cluster. Edges are invisible until a pulse fires
+ *    along them, then fade out over EDGE_DECAY ms.
+ *    Higher = denser web, more cascade branching, heavier on CPU.
+ *
+ *  LONG_RANGE_P (0.20)
+ *    Probability that a node gets one inter-cluster edge (to the nearest
+ *    node in a different cluster). At 0.20, ~20% of nodes bridge clusters.
+ *    Higher = more cross-cluster cascades. 0 = isolated clusters. 1 = old behavior.
+ *
+ *  EDGE_MARGIN (80)
+ *    Pixel inset from viewport edge where nodes can spawn.
+ *    Prevents nodes from sitting right at the screen border.
+ *
+ *  THRESHOLD (0.9)
+ *    Membrane potential needed to fire a node. Each incoming pulse
+ *    adds the edge weight (random 0-1) to the target's membrane.
+ *    Lower = cascades spread further (0.5 = explosive).
+ *    Higher = cascades die faster (1.0 = only convergence fires).
+ *    Each node has 2 guaranteed edges set to THRESHOLD+0.01, so
+ *    at least one outgoing path always fires.
+ *
+ *  DELAY (500)
+ *    Milliseconds for a pulse to travel from source to target.
+ *    Lower = faster propagation, snappier feel.
+ *    Higher = slower, more visible traveling dots.
+ *
+ *  REFRACTORY (500)
+ *    Milliseconds a node is unresponsive after firing.
+ *    Prevents instant re-firing and limits cascade loops.
+ *    Lower = nodes recover faster, cascades can revisit sooner.
+ *
+ *  CASCADE_LIFE (4000)
+ *    Hard time limit (ms) for any single cascade chain.
+ *    After this, no new pulses are scheduled from that cascade.
+ *    Controls max duration of a single firing event.
+ *
+ *  CASCADE_FADE (2000)
+ *    Duration (ms) over which a cascade's visuals (traveling pulses
+ *    and node glows) fade to transparent after hitting CASCADE_LIFE.
+ *    Prevents abrupt disappearance of long-running cascades.
+ *
+ *  SPONTANEOUS (1000)
+ *    Milliseconds between random auto-fires from edge nodes.
+ *    Lower = more frequent activity. Higher = calmer network.
+ *
+ *  INTRO_WAVE (2500)
+ *    Duration (ms) of the bottom-to-top node reveal on page load.
+ *    Longer = slower, more dramatic entrance.
+ *
+ *  INTRO_FADE (200)
+ *    Duration (ms) for each node to fade in during the intro.
+ *
+ *  EDGE_DECAY (3000)
+ *    Milliseconds for a fired edge to fade from visible to invisible.
+ *    Edges are only drawn when recently fired — the network topology
+ *    is revealed organically by cascading activity.
+ *
+ *  GLOW_DURATION (350)
+ *    How long (ms) the radial glow persists after a node fires.
+ *    The glow follows a fast-rise/exponential-decay waveform.
+ *
+ * ══════════════════════════════════════════════════════════════════
+ */
+
+/* ── Constants ── */
+const BG           = '#0d1117';
+const NODE_SCALE   = 0.20;
+const NEIGHBORS    = 7;
+const EDGE_MARGIN  = 80;
+const THRESHOLD    = 0.4;
+const DELAY        = 500;
+const REFRACTORY   = 500;
+const CASCADE_LIFE = 4000;
+const CASCADE_FADE = 4000;
+const SPONTANEOUS  = 1000;
+const INTRO_WAVE   = 1000;
+const INTRO_FADE   = 100;
+const EDGE_DECAY   = 20000;
+const LONG_RANGE_P = 0.20;
+
+/* ── Spectral palette — 12 hues evenly spaced ── */
+function hslToRgb(h, s, l) {
+  const c = (1 - Math.abs(2 * l - 1)) * s;
+  const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+  const m = l - c / 2;
+  let r, g, b;
+  if (h < 60)       { r = c; g = x; b = 0; }
+  else if (h < 120) { r = x; g = c; b = 0; }
+  else if (h < 180) { r = 0; g = c; b = x; }
+  else if (h < 240) { r = 0; g = x; b = c; }
+  else if (h < 300) { r = x; g = 0; b = c; }
+  else              { r = c; g = 0; b = x; }
+  return [Math.round((r + m) * 255), Math.round((g + m) * 255), Math.round((b + m) * 255)];
+}
+const SPECTRUM = [];
+for (let i = 0; i < 12; i++) SPECTRUM.push(hslToRgb(i * 30, 0.85, 0.6));
+
+/* ── Precompute action-potential waveform envelope (30 samples) ── */
+const WAVEFORM_LEN = 30;
+const WAVEFORM = new Float32Array(WAVEFORM_LEN);
+const GLOW_DURATION = 350; // ms total for the glow animation
+{
+  const riseEnd = 4; // fast rise over first 5 samples (indices 0-4)
+  for (let i = 0; i < WAVEFORM_LEN; i++) {
+    if (i <= riseEnd) {
+      WAVEFORM[i] = i / riseEnd; // linear rise to 1.0
+    } else {
+      // exponential decay from 1.0
+      const t = (i - riseEnd) / (WAVEFORM_LEN - 1 - riseEnd);
+      WAVEFORM[i] = Math.exp(-4 * t);
+    }
+  }
+}
+
+/* ── Min-Heap ── */
+class MinHeap {
+  constructor() { this.data = []; }
+  get size() { return this.data.length; }
+  push(e) {
+    this.data.push(e);
+    this._up(this.data.length - 1);
+  }
+  peek() { return this.data[0]; }
+  pop() {
+    const top = this.data[0];
+    const last = this.data.pop();
+    if (this.data.length > 0) { this.data[0] = last; this._down(0); }
+    return top;
+  }
+  _up(i) {
+    const d = this.data;
+    while (i > 0) {
+      const p = (i - 1) >> 1;
+      if (d[i].scheduledTime >= d[p].scheduledTime) break;
+      [d[i], d[p]] = [d[p], d[i]];
+      i = p;
+    }
+  }
+  _down(i) {
+    const d = this.data, n = d.length;
+    while (true) {
+      let s = i, l = 2 * i + 1, r = l + 1;
+      if (l < n && d[l].scheduledTime < d[s].scheduledTime) s = l;
+      if (r < n && d[r].scheduledTime < d[s].scheduledTime) s = r;
+      if (s === i) break;
+      [d[i], d[s]] = [d[s], d[i]];
+      i = s;
+    }
+  }
+}
+
+/* ── State ── */
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let offscreen, offCtx;
+let nodes, adj, edgeNodes;
+let nodeCount, maxPulses;
+let cluster, clusterColor;
+let membrane, refractoryUntil, fireTime, fireBirth;
+let heap, inFlight, activePulseCount;
+let nextSpontaneous;
+let resizeTimer = 0;
+let introStart, introComplete;
+let revealAt;
+
+/* Stats overlay state */
+const statsEl = document.getElementById('stats');
+const frameTimes = new Float64Array(60);
+let frameIdx = 0, frameFilled = 0, lastStatsUpdate = 0;
+
+/* ── Initialization ── */
+function init() {
+  const W = window.innerWidth, H = window.innerHeight;
+  canvas.width = W;
+  canvas.height = H;
+
+  /* sqrt-based node count — scales well from phone to desktop */
+  nodeCount = Math.max(40, Math.round(Math.sqrt(W * H) * NODE_SCALE));
+  maxPulses = Math.max(50, Math.round(nodeCount * 0.5));
+
+  /* Nodes */
+  nodes = new Array(nodeCount);
+  const m = EDGE_MARGIN;
+  for (let i = 0; i < nodeCount; i++) {
+    nodes[i] = {
+      x: m + Math.random() * (W - 2 * m),
+      y: m + Math.random() * (H - 2 * m)
+    };
+  }
+
+  edgeNodes = null; // unused — spontaneous fires pick any node
+
+  /* Cluster-based adjacency */
+  const K = Math.round(Math.sqrt(nodeCount));
+  // Pick K cluster centers randomly from existing nodes
+  const centerIndices = [];
+  const used = new Set();
+  while (centerIndices.length < K) {
+    const idx = Math.floor(Math.random() * nodeCount);
+    if (!used.has(idx)) { used.add(idx); centerIndices.push(idx); }
+  }
+  // Assign each node to its nearest cluster center (Voronoi)
+  cluster = new Int32Array(nodeCount);
+  for (let i = 0; i < nodeCount; i++) {
+    let bestD = Infinity, bestC = 0;
+    for (let c = 0; c < K; c++) {
+      const ci = centerIndices[c];
+      const dx = nodes[i].x - nodes[ci].x, dy = nodes[i].y - nodes[ci].y;
+      const d = dx * dx + dy * dy;
+      if (d < bestD) { bestD = d; bestC = c; }
+    }
+    cluster[i] = bestC;
+  }
+  // Build per-cluster member lists
+  const clusterMembers = new Array(K);
+  for (let c = 0; c < K; c++) clusterMembers[c] = [];
+  for (let i = 0; i < nodeCount; i++) clusterMembers[cluster[i]].push(i);
+
+  // Assign each cluster a spectral color
+  clusterColor = new Array(K);
+  for (let c = 0; c < K; c++) clusterColor[c] = SPECTRUM[c % SPECTRUM.length];
+
+  adj = new Array(nodeCount);
+  for (let i = 0; i < nodeCount; i++) {
+    adj[i] = [];
+    const INTRA = NEIGHBORS - 1;
+    // Intra-cluster: nearest INTRA nodes within same cluster
+    const myCluster = clusterMembers[cluster[i]];
+    const intraDists = [];
+    for (const j of myCluster) {
+      if (j === i) continue;
+      const dx = nodes[i].x - nodes[j].x, dy = nodes[i].y - nodes[j].y;
+      intraDists.push({ j, d: dx * dx + dy * dy });
+    }
+    intraDists.sort((a, b) => a.d - b.d);
+    for (let k = 0; k < INTRA && k < intraDists.length; k++) {
+      adj[i].push({ target: intraDists[k].j, weight: Math.random(), lastFired: -1e9 });
+    }
+    // Inter-cluster: long-range connection with LONG_RANGE_P probability
+    if (Math.random() < LONG_RANGE_P) {
+      let bestInterD = Infinity, bestInterJ = -1;
+      for (let j = 0; j < nodeCount; j++) {
+        if (cluster[j] === cluster[i] || j === i) continue;
+        const dx = nodes[i].x - nodes[j].x, dy = nodes[i].y - nodes[j].y;
+        const d = dx * dx + dy * dy;
+        if (d < bestInterD) { bestInterD = d; bestInterJ = j; }
+      }
+      if (bestInterJ >= 0) {
+        adj[i].push({ target: bestInterJ, weight: THRESHOLD + 0.01, lastFired: -1e9 });
+      }
+    }
+  }
+
+  /* Offscreen static canvas (drawn after intro completes) */
+  offscreen = document.createElement('canvas');
+  offscreen.width = W;
+  offscreen.height = H;
+  offCtx = offscreen.getContext('2d');
+
+  /* Intro animation state */
+  introStart = performance.now();
+  introComplete = false;
+  revealAt = new Float64Array(nodeCount);
+  for (let i = 0; i < nodeCount; i++) {
+    revealAt[i] = introStart + (1 - nodes[i].y / H) * INTRO_WAVE;
+  }
+
+  /* Simulation state */
+  membrane = new Float64Array(nodeCount);
+  refractoryUntil = new Float64Array(nodeCount);
+  fireTime = new Float64Array(nodeCount);
+  fireBirth = new Float64Array(nodeCount);
+  fireTime.fill(-1e9);
+  fireBirth.fill(-1e9);
+  heap = new MinHeap();
+  inFlight = [];
+  activePulseCount = 0;
+  nextSpontaneous = introStart + INTRO_WAVE + INTRO_FADE + SPONTANEOUS;
+}
+
+/* ── Bake offscreen canvas (static edges + nodes) ── */
+function bakeOffscreen() {
+  offCtx.clearRect(0, 0, offscreen.width, offscreen.height);
+  for (let i = 0; i < nodeCount; i++) {
+    const [cr, cg, cb] = clusterColor[cluster[i]];
+    offCtx.fillStyle = `rgba(${cr},${cg},${cb},0.25)`;
+    offCtx.beginPath();
+    offCtx.arc(nodes[i].x, nodes[i].y, 2, 0, Math.PI * 2);
+    offCtx.fill();
+  }
+}
+
+/* ── Fire a node ── */
+function fireNode(i, now, birthTime, firedBy) {
+  if (activePulseCount >= maxPulses) return;
+  fireTime[i] = now;
+  fireBirth[i] = birthTime;
+  membrane[i] = 0;
+  refractoryUntil[i] = now + REFRACTORY;
+  activePulseCount++;
+
+  for (const edge of adj[i]) {
+    if (edge.target === firedBy) continue; // no reverse propagation
+    const scheduledTime = now + DELAY;
+    if (scheduledTime > birthTime + CASCADE_LIFE) continue;
+    heap.push({
+      targetNode: edge.target,
+      scheduledTime,
+      birthTime,
+      strength: edge.weight,
+      sourceNode: i,
+      edge
+    });
+    inFlight.push({
+      sourceNode: i,
+      targetNode: edge.target,
+      startTime: now,
+      endTime: scheduledTime,
+      birthTime
+    });
+  }
+}
+
+/* ── Main loop ── */
+function frame() {
+  requestAnimationFrame(frame);
+  if (document.hidden) return;
+
+  const now = performance.now();
+
+  /* Membrane leak — decay sub-threshold charge so it doesn't accumulate across cascades */
+  for (let i = 0; i < nodeCount; i++) {
+    if (membrane[i] > 0) membrane[i] *= 0.95;
+  }
+
+  /* Process due events */
+  while (heap.size > 0 && heap.peek().scheduledTime <= now) {
+    const ev = heap.pop();
+    /* Discard expired cascades */
+    if (now > ev.birthTime + CASCADE_LIFE) continue;
+    const t = ev.targetNode;
+    /* Discard if in refractory */
+    if (now < refractoryUntil[t]) continue;
+    ev.edge.lastFired = now;
+    membrane[t] += ev.strength;
+    if (membrane[t] >= THRESHOLD) {
+      fireNode(t, now, ev.birthTime, ev.sourceNode);
+    }
+  }
+
+  /* Spontaneous firing (skip during intro) */
+  if (introComplete && now >= nextSpontaneous) {
+    const i = Math.floor(Math.random() * nodeCount);
+    if (now >= refractoryUntil[i]) {
+      fireNode(i, now, now, -1);
+    }
+    nextSpontaneous = now + SPONTANEOUS;
+  }
+
+  /* ── Render ── */
+  ctx.fillStyle = BG;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  if (!introComplete) {
+    /* Intro: fade in nodes bottom-to-top */
+    for (let i = 0; i < nodeCount; i++) {
+      const elapsed = now - revealAt[i];
+      if (elapsed < 0) continue;
+      const alpha = Math.min(elapsed / INTRO_FADE, 1) * 0.25;
+      const [cr, cg, cb] = clusterColor[cluster[i]];
+      ctx.fillStyle = `rgba(${cr},${cg},${cb},${alpha})`;
+      ctx.beginPath();
+      ctx.arc(nodes[i].x, nodes[i].y, 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    // Check if intro is done
+    if (now > introStart + INTRO_WAVE + INTRO_FADE) {
+      introComplete = true;
+      bakeOffscreen();
+    }
+  } else {
+    ctx.drawImage(offscreen, 0, 0);
+  }
+
+  /* Fired edges — visible only while decaying */
+  ctx.lineWidth = 1;
+  for (let i = 0; i < nodeCount; i++) {
+    for (const e of adj[i]) {
+      const elapsed = now - e.lastFired;
+      if (elapsed >= EDGE_DECAY) continue;
+      const alpha = 0.15 * (1 - elapsed / EDGE_DECAY);
+      const [cr, cg, cb] = clusterColor[cluster[i]];
+      ctx.strokeStyle = `rgba(${cr},${cg},${cb},${alpha})`;
+      ctx.beginPath();
+      ctx.moveTo(nodes[i].x, nodes[i].y);
+      ctx.lineTo(nodes[e.target].x, nodes[e.target].y);
+      ctx.stroke();
+    }
+  }
+
+  /* Traveling pulses */
+  let j = 0;
+  for (let k = 0; k < inFlight.length; k++) {
+    const p = inFlight[k];
+    const cascadeAge = now - p.birthTime;
+    if (now >= p.endTime || cascadeAge > CASCADE_LIFE + CASCADE_FADE) {
+      continue; // remove by not copying
+    }
+    inFlight[j++] = p;
+    const t = (now - p.startTime) / (p.endTime - p.startTime);
+    if (t < 0) continue;
+    const fade = cascadeAge > CASCADE_LIFE
+      ? 1 - (cascadeAge - CASCADE_LIFE) / CASCADE_FADE : 1;
+    const sx = nodes[p.sourceNode].x, sy = nodes[p.sourceNode].y;
+    const tx = nodes[p.targetNode].x, ty = nodes[p.targetNode].y;
+    const px = sx + (tx - sx) * t;
+    const py = sy + (ty - sy) * t;
+    ctx.beginPath();
+    ctx.arc(px, py, 3, 0, Math.PI * 2);
+    const [pr, pg, pb] = clusterColor[cluster[p.sourceNode]];
+    ctx.fillStyle = `rgba(${pr},${pg},${pb},${(0.6 + 0.4 * (1 - t)) * fade})`;
+    ctx.fill();
+  }
+  inFlight.length = j;
+
+  /* Node glows */
+  for (let i = 0; i < nodeCount; i++) {
+    const elapsed = now - fireTime[i];
+    if (elapsed > GLOW_DURATION || elapsed < 0) continue;
+    const cascadeAge = now - fireBirth[i];
+    const fade = cascadeAge > CASCADE_LIFE
+      ? Math.max(0, 1 - (cascadeAge - CASCADE_LIFE) / CASCADE_FADE) : 1;
+    if (fade <= 0) continue;
+    const sampleIdx = (elapsed / GLOW_DURATION) * (WAVEFORM_LEN - 1);
+    const lo = Math.floor(sampleIdx);
+    const hi = Math.min(lo + 1, WAVEFORM_LEN - 1);
+    const frac = sampleIdx - lo;
+    const intensity = WAVEFORM[lo] + (WAVEFORM[hi] - WAVEFORM[lo]) * frac;
+    if (intensity < 0.01) continue;
+
+    const r = 12 + intensity * 18;
+    const grad = ctx.createRadialGradient(
+      nodes[i].x, nodes[i].y, 0,
+      nodes[i].x, nodes[i].y, r
+    );
+    const [gr, gg, gb] = clusterColor[cluster[i]];
+    grad.addColorStop(0, `rgba(${gr},${gg},${gb},${intensity * 0.9 * fade})`);
+    grad.addColorStop(1, `rgba(${gr},${gg},${gb},0)`);
+    ctx.beginPath();
+    ctx.arc(nodes[i].x, nodes[i].y, r, 0, Math.PI * 2);
+    ctx.fillStyle = grad;
+    ctx.fill();
+  }
+
+  /* Track active pulses from actual in-flight count (returns to 0 when cascades end) */
+  activePulseCount = inFlight.length;
+
+  /* Stats overlay */
+  frameTimes[frameIdx] = now;
+  frameIdx = (frameIdx + 1) % 60;
+  if (frameFilled < 60) frameFilled++;
+  if (statsEl.style.display !== 'none' && now - lastStatsUpdate > 250) {
+    lastStatsUpdate = now;
+    const oldest = frameTimes[(frameIdx - frameFilled + 60) % 60];
+    const fps = frameFilled > 1 ? ((frameFilled - 1) * 1000 / (now - oldest)) : 0;
+    statsEl.innerHTML =
+      `FPS: ${Math.round(fps)}<br>` +
+      `Nodes: ${nodeCount}<br>` +
+      `Heap: ${heap.size}<br>` +
+      `Pulses: ${inFlight.length}`;
+  }
+}
+
+/* ── Touch / click support ── */
+canvas.addEventListener('pointerdown', (e) => {
+  const ex = e.clientX, ey = e.clientY;
+  let best = -1, bestD = 20 * 20;
+  for (let i = 0; i < nodeCount; i++) {
+    const dx = nodes[i].x - ex, dy = nodes[i].y - ey;
+    const d = dx * dx + dy * dy;
+    if (d < bestD) { bestD = d; best = i; }
+  }
+  if (best >= 0) {
+    const now = performance.now();
+    if (!introComplete && now < revealAt[best]) return;
+    if (now >= refractoryUntil[best]) {
+      fireNode(best, now, now, -1);
+    }
+  }
+});
+
+/* ── Stats toggle ── */
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'd' || e.key === 'D') {
+    statsEl.style.display = statsEl.style.display === 'none' ? 'block' : 'none';
+  }
+});
+
+/* ── Resize ── */
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(init, 300);
+});
+
+/* ── Start ── */
+init();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
