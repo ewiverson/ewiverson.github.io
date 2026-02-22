@@ -185,7 +185,7 @@ const EDGE_DECAY   = 30000;
 const LONG_RANGE_P = 0.30;
 
 /* ── 3D / Rotation ── */
-const FOV              = 500;   // perspective focal length (px)
+let   fov              = 500;   // perspective focal length, set in init()
 const DRAG_SENSITIVITY = 0.005; // radians per pixel dragged
 
 /* ── Spectral palette — 12 hues evenly spaced ── */
@@ -296,7 +296,7 @@ function projectAll() {
     const ry = m[3]*n.x + m[4]*n.y + m[5]*n.z;
     const rz = m[6]*n.x + m[7]*n.y + m[8]*n.z;
     // Perspective projection
-    const scale = FOV / (FOV + rz);
+    const scale = fov / (fov + rz);
     n.px = cx + rx * scale;
     n.py = cy + ry * scale;
     n.ps = scale;
@@ -338,7 +338,8 @@ function init() {
 
   /* Nodes — uniform random inside a sphere */
   nodes = new Array(nodeCount);
-  sphereRadius = Math.min(W, H) * 0.38;
+  sphereRadius = Math.max(Math.min(W, H), 0.8 * Math.max(W, H)) / 2;
+  fov = sphereRadius * 2.5;
   for (let i = 0; i < nodeCount; i++) {
     let sx, sy, sz;
     do {
