@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Under Construction</title>
+<title>Eric W Iverson</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: #0d1117; overflow: hidden; }
   canvas { display: block; position: absolute; top: 0; left: 0; }
   #overlay {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    display: flex; align-items: center; justify-content: center;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
     pointer-events: none; z-index: 1;
   }
   #overlay h1 {
@@ -20,6 +20,31 @@
     letter-spacing: 0.15em;
     color: rgba(255, 255, 255, 0.55);
     text-transform: uppercase;
+  }
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-top: 24px;
+    pointer-events: auto;
+  }
+  .contact-links a {
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    color: rgba(255, 255, 255, 0.45);
+    text-decoration: none;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 8px 20px;
+    border-radius: 4px;
+    transition: color 0.3s, border-color 0.3s;
+    cursor: pointer;
+  }
+  .contact-links a:hover {
+    color: rgba(255, 255, 255, 0.8);
+    border-color: rgba(255, 255, 255, 0.4);
   }
   #stats {
     position: absolute; bottom: 8px; left: 8px; z-index: 2;
@@ -32,8 +57,24 @@
 </head>
 <body>
 <canvas id="canvas"></canvas>
-<div id="overlay"><h1>Under Construction</h1></div>
+<div id="overlay">
+  <h1>Eric W Iverson</h1>
+  <div class="contact-links">
+    <a id="email-link" href="#">Email</a>
+    <a href="https://www.linkedin.com/in/ericiverson/" target="_blank" rel="noopener">LinkedIn</a>
+  </div>
+</div>
 <div id="stats"></div>
+<script>
+document.getElementById('email-link').addEventListener('click', function reveal(e) {
+  e.preventDefault();
+  var el = e.currentTarget;
+  var addr = atob('ZXJpY0Bld2l2ZXJzb24uY29t');
+  el.textContent = addr;
+  el.href = 'mailto:' + addr;
+  el.removeEventListener('click', reveal);
+});
+</script>
 <script>
 'use strict';
 
