@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Spelling Worksheet Generator — Eric W Iverson</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <style>
   :root {
     --bg: #0d1117;
@@ -368,342 +369,12 @@
 
     <!-- Worksheet slideshow -->
     <div class="slideshow">
-    <div class="slideshow-viewport">
-    <div class="slideshow-track" id="slideshowTrack">
-
-    <!-- Slide 1: Day 1A — Meet Your Words -->
-    <div class="slide">
-    <div class="worksheet-preview">
-      <div class="preview-label">Day 1 — Page A: Meet Your Words!</div>
-      <div class="ws">
-        <div class="ws-title">Spelling Words: -are, -air, -ear &nbsp;|&nbsp; Day 1 — Page A: Meet Your Words!</div>
-        <h3>Word Groups</h3>
-        <div class="ws-groups">
-          <div class="ws-group">
-            <div class="ws-group-header">-are words</div>
-            <div class="ws-group-rule">a-r-e says /air/ like in "care"</div>
-            <div class="ws-group-words">
-              <div class="ws-group-word">
-                <svg width="28" height="28" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="16" y="16" width="48" height="48" fill="white" stroke="#000" stroke-width="5"/>
-                  <line x1="16" y1="16" x2="8" y2="8" stroke="#000" stroke-width="3"/>
-                  <line x1="64" y1="16" x2="72" y2="8" stroke="#000" stroke-width="3"/>
-                  <line x1="16" y1="64" x2="8" y2="72" stroke="#000" stroke-width="3"/>
-                  <line x1="64" y1="64" x2="72" y2="72" stroke="#000" stroke-width="3"/>
-                </svg>
-                square
-              </div>
-              <div class="ws-group-word">share</div>
-              <div class="ws-group-word">care</div>
-              <div class="ws-group-word">scare</div>
-              <div class="ws-group-word">
-                <svg width="28" height="28" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="18" y="44" width="44" height="24" rx="4" fill="white" stroke="#000" stroke-width="4"/>
-                  <line x1="28" y1="44" x2="24" y2="64" stroke="#000" stroke-width="3"/>
-                  <line x1="52" y1="44" x2="56" y2="64" stroke="#000" stroke-width="3"/>
-                  <ellipse cx="40" cy="36" rx="16" ry="12" fill="white" stroke="#000" stroke-width="4"/>
-                  <line x1="20" y1="40" x2="12" y2="52" stroke="#000" stroke-width="3"/>
-                  <line x1="60" y1="40" x2="68" y2="52" stroke="#000" stroke-width="3"/>
-                </svg>
-                chair
-              </div>
-            </div>
-          </div>
-          <div class="ws-group">
-            <div class="ws-group-header">-air words</div>
-            <div class="ws-group-rule">-air also says /air/ like "fair"</div>
-            <div class="ws-group-words">
-              <div class="ws-group-word">air</div>
-              <div class="ws-group-word">fair</div>
-            </div>
-          </div>
-          <div class="ws-group">
-            <div class="ws-group-header">-ear words</div>
-            <div class="ws-group-rule">-ear can say /air/ too! like "bear"</div>
-            <div class="ws-group-words">
-              <div class="ws-group-word">
-                <svg width="28" height="28" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="40" cy="46" r="24" fill="white" stroke="#000" stroke-width="4"/>
-                  <circle cx="22" cy="24" r="9" fill="white" stroke="#000" stroke-width="4"/>
-                  <circle cx="58" cy="24" r="9" fill="white" stroke="#000" stroke-width="4"/>
-                  <circle cx="33" cy="44" r="3" fill="#000"/>
-                  <circle cx="47" cy="44" r="3" fill="#000"/>
-                  <ellipse cx="40" cy="54" rx="7" ry="4" fill="white" stroke="#000" stroke-width="2.5"/>
-                </svg>
-                bear
-              </div>
-              <div class="ws-group-word">
-                <svg width="28" height="28" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
-                  <ellipse cx="40" cy="48" rx="22" ry="18" fill="white" stroke="#000" stroke-width="4"/>
-                  <ellipse cx="40" cy="30" rx="14" ry="10" fill="white" stroke="#000" stroke-width="4"/>
-                  <line x1="30" y1="66" x2="26" y2="76" stroke="#000" stroke-width="3"/>
-                  <line x1="50" y1="66" x2="54" y2="76" stroke="#000" stroke-width="3"/>
-                </svg>
-                pear
-              </div>
-              <div class="ws-group-word">wear</div>
-            </div>
-          </div>
-        </div>
-        <hr class="ws-divider">
-        <h3>❤ Heart Words — Match the Meaning</h3>
-        <table style="width:100%;border-collapse:collapse;font-size:11.5px;">
-          <thead>
-            <tr>
-              <th style="background:#000;color:#fff;padding:5px 10px;text-align:left;width:25%;">Heart Word</th>
-              <th style="background:#000;color:#fff;padding:5px 10px;text-align:left;">What does it mean?</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td style="border:1px solid #000;padding:6px 10px;font-weight:bold;">once</td><td style="border:1px solid #000;padding:6px 10px;">one time only (Once upon a time…)</td></tr>
-            <tr><td style="border:1px solid #000;padding:6px 10px;font-weight:bold;">upon</td><td style="border:1px solid #000;padding:6px 10px;">on top of something</td></tr>
-            <tr><td style="border:1px solid #000;padding:6px 10px;font-weight:bold;">yellow</td><td style="border:1px solid #000;padding:6px 10px;">a bright sunny color</td></tr>
-            <tr><td style="border:1px solid #000;padding:6px 10px;font-weight:bold;">live</td><td style="border:1px solid #000;padding:6px 10px;">to be alive; where you call home</td></tr>
-          </tbody>
-        </table>
-      </div>
+    <div class="slideshow-viewport" style="background:#fff;">
+      <canvas id="pdfCanvas" style="width:100%;display:block;"></canvas>
     </div>
-    </div> <!-- /slide -->
-
-    <!-- Slide 2: Day 1B — Look, Cover, Write -->
-    <div class="slide">
-    <div class="worksheet-preview">
-      <div class="preview-label">Day 1 — Page B: Look, Cover, Write!</div>
-      <div class="ws">
-        <div class="ws-title">Spelling Words: -are, -air, -ear &nbsp;|&nbsp; Day 1 — Page B: Look, Cover, Write!</div>
-        <div class="ws-lcw">
-          <h3>Look, Cover, Write!</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>Word</th>
-                <th>Write it</th>
-                <th>Write it again</th>
-                <th>One more time!</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td>square</td><td></td><td></td><td></td></tr>
-              <tr><td>share</td><td></td><td></td><td></td></tr>
-              <tr><td>care</td><td></td><td></td><td></td></tr>
-              <tr><td>scare</td><td></td><td></td><td></td></tr>
-              <tr><td>chair</td><td></td><td></td><td></td></tr>
-              <tr><td>air</td><td></td><td></td><td></td></tr>
-              <tr><td>fair</td><td></td><td></td><td></td></tr>
-              <tr><td>pear</td><td></td><td></td><td></td></tr>
-              <tr><td>bear</td><td></td><td></td><td></td></tr>
-              <tr><td>wear</td><td></td><td></td><td></td></tr>
-            </tbody>
-          </table>
-          <hr class="ws-divider" style="margin:12px 0 10px;">
-          <h3>❤ Heart Words — Look, Cover, Write!</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>Word</th>
-                <th>Write it</th>
-                <th>Write it again</th>
-                <th>One more time!</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td>once</td><td></td><td></td><td></td></tr>
-              <tr><td>upon</td><td></td><td></td><td></td></tr>
-              <tr><td>yellow</td><td></td><td></td><td></td></tr>
-              <tr><td>live</td><td></td><td></td><td></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-    </div> <!-- /slide -->
-
-    <!-- Slide 3: Day 2A — Fill in the Blank -->
-    <div class="slide">
-    <div class="worksheet-preview">
-      <div class="preview-label">Day 2 — Page A: Fill in the Blank</div>
-      <div class="ws">
-        <div class="ws-title">Spelling Words: -are, -air, -ear &nbsp;|&nbsp; Day 2 — Page A: Fill in the Blank</div>
-        <h3>Word Bank</h3>
-        <div style="border:1.5px solid #000;border-radius:3px;padding:6px 10px;margin-bottom:14px;font-size:11.5px;display:flex;flex-wrap:wrap;gap:4px 16px;">
-          <span>square</span><span>share</span><span>care</span><span>scare</span><span>chair</span><span>air</span><span>fair</span><span>pear</span><span>bear</span><span>wear</span>
-        </div>
-        <h3>Fill in the Blank</h3>
-        <p style="font-size:10px;font-style:italic;margin:0 0 8px;">Use a word from the bank to complete each sentence.</p>
-        <table style="width:100%;border-collapse:collapse;font-size:11.5px;">
-          <tbody>
-            <tr><td style="padding:7px 8px;border-bottom:1px solid #ddd;">1. The big brown _____________ lives in the woods.</td></tr>
-            <tr><td style="padding:7px 8px;border-bottom:1px solid #ddd;">2. It is not _____________ to skip your turn.</td></tr>
-            <tr><td style="padding:7px 8px;border-bottom:1px solid #ddd;">3. I will _____________ my cookie with you.</td></tr>
-            <tr><td style="padding:7px 8px;border-bottom:1px solid #ddd;">4. I take _____________ of my pet every day.</td></tr>
-            <tr><td style="padding:7px 8px;border-bottom:1px solid #ddd;">5. I sat down in a cozy rocking _____________.</td></tr>
-            <tr><td style="padding:7px 8px;border-bottom:1px solid #ddd;">6. We breathe _____________ to stay alive.</td></tr>
-            <tr><td style="padding:7px 8px;border-bottom:1px solid #ddd;">7. A _____________ has four equal sides.</td></tr>
-            <tr><td style="padding:7px 8px;border-bottom:1px solid #ddd;">8. I packed a juicy _____________ in my lunchbox.</td></tr>
-            <tr><td style="padding:7px 8px;border-bottom:1px solid #ddd;">9. Did that loud thunder _____________ you?</td></tr>
-            <tr><td style="padding:7px 8px;">10. What will you _____________ to the party?</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    </div> <!-- /slide -->
-
-    <!-- Slide 4: Day 2B — Circle the Correct Spelling -->
-    <div class="slide">
-    <div class="worksheet-preview">
-      <div class="preview-label">Day 2 — Page B: Circle the Correct Spelling</div>
-      <div class="ws">
-        <div class="ws-title">Spelling Words: -are, -air, -ear &nbsp;|&nbsp; Day 2 — Page B: Circle the Correct Spelling</div>
-        <h3>Circle the Correct Spelling</h3>
-        <p style="font-size:10px;font-style:italic;margin:0 0 8px;">Circle the word that is spelled correctly in each row.</p>
-        <table style="width:100%;border-collapse:collapse;font-size:12px;">
-          <tbody>
-            <tr style="border-bottom:1px solid #e0e0e0;"><td style="padding:5px 8px;font-weight:bold;width:9%;">1.</td><td style="padding:5px 8px;">&#9675; bair</td><td style="padding:5px 8px;">&#9675; bear</td><td style="padding:5px 8px;">&#9675; baer</td></tr>
-            <tr style="border-bottom:1px solid #e0e0e0;"><td style="padding:5px 8px;font-weight:bold;">2.</td><td style="padding:5px 8px;">&#9675; sqaure</td><td style="padding:5px 8px;">&#9675; squair</td><td style="padding:5px 8px;">&#9675; square</td></tr>
-            <tr style="border-bottom:1px solid #e0e0e0;"><td style="padding:5px 8px;font-weight:bold;">3.</td><td style="padding:5px 8px;">&#9675; share</td><td style="padding:5px 8px;">&#9675; shaire</td><td style="padding:5px 8px;">&#9675; shere</td></tr>
-            <tr style="border-bottom:1px solid #e0e0e0;"><td style="padding:5px 8px;font-weight:bold;">4.</td><td style="padding:5px 8px;">&#9675; caer</td><td style="padding:5px 8px;">&#9675; care</td><td style="padding:5px 8px;">&#9675; cair</td></tr>
-            <tr style="border-bottom:1px solid #e0e0e0;"><td style="padding:5px 8px;font-weight:bold;">5.</td><td style="padding:5px 8px;">&#9675; scair</td><td style="padding:5px 8px;">&#9675; skare</td><td style="padding:5px 8px;">&#9675; scare</td></tr>
-            <tr style="border-bottom:1px solid #e0e0e0;"><td style="padding:5px 8px;font-weight:bold;">6.</td><td style="padding:5px 8px;">&#9675; chair</td><td style="padding:5px 8px;">&#9675; chare</td><td style="padding:5px 8px;">&#9675; chiar</td></tr>
-            <tr style="border-bottom:1px solid #e0e0e0;"><td style="padding:5px 8px;font-weight:bold;">7.</td><td style="padding:5px 8px;">&#9675; aer</td><td style="padding:5px 8px;">&#9675; aire</td><td style="padding:5px 8px;">&#9675; air</td></tr>
-            <tr style="border-bottom:1px solid #e0e0e0;"><td style="padding:5px 8px;font-weight:bold;">8.</td><td style="padding:5px 8px;">&#9675; fair</td><td style="padding:5px 8px;">&#9675; fare</td><td style="padding:5px 8px;">&#9675; fiar</td></tr>
-            <tr style="border-bottom:1px solid #e0e0e0;"><td style="padding:5px 8px;font-weight:bold;">9.</td><td style="padding:5px 8px;">&#9675; paer</td><td style="padding:5px 8px;">&#9675; pear</td><td style="padding:5px 8px;">&#9675; peer</td></tr>
-            <tr><td style="padding:5px 8px;font-weight:bold;">10.</td><td style="padding:5px 8px;">&#9675; ware</td><td style="padding:5px 8px;">&#9675; wear</td><td style="padding:5px 8px;">&#9675; wair</td></tr>
-          </tbody>
-        </table>
-        <hr class="ws-divider">
-        <h3>❤ Heart Words — Circle the Correct Spelling</h3>
-        <table style="width:100%;border-collapse:collapse;font-size:12px;">
-          <tbody>
-            <tr style="border-bottom:1px solid #e0e0e0;"><td style="padding:5px 8px;font-weight:bold;width:9%;">11.</td><td style="padding:5px 8px;">&#9675; wonce</td><td style="padding:5px 8px;">&#9675; once</td><td style="padding:5px 8px;">&#9675; onse</td></tr>
-            <tr style="border-bottom:1px solid #e0e0e0;"><td style="padding:5px 8px;font-weight:bold;">12.</td><td style="padding:5px 8px;">&#9675; uppon</td><td style="padding:5px 8px;">&#9675; upen</td><td style="padding:5px 8px;">&#9675; upon</td></tr>
-            <tr style="border-bottom:1px solid #e0e0e0;"><td style="padding:5px 8px;font-weight:bold;">13.</td><td style="padding:5px 8px;">&#9675; yello</td><td style="padding:5px 8px;">&#9675; yellow</td><td style="padding:5px 8px;">&#9675; yelow</td></tr>
-            <tr><td style="padding:5px 8px;font-weight:bold;">14.</td><td style="padding:5px 8px;">&#9675; live</td><td style="padding:5px 8px;">&#9675; liv</td><td style="padding:5px 8px;">&#9675; lyve</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    </div> <!-- /slide -->
-
-    <!-- Slide 5: Day 3A — Write from Memory -->
-    <div class="slide">
-    <div class="worksheet-preview">
-      <div class="preview-label">Day 3 — Page A: Write from Memory</div>
-      <div class="ws">
-        <div class="ws-title">Spelling Words: -are, -air, -ear &nbsp;|&nbsp; Day 3 — Page A: Write from Memory</div>
-        <h3>Write from Memory</h3>
-        <p style="font-size:10px;font-style:italic;margin:0 0 12px;">Cover your word list. Write each word from memory, then check your spelling.</p>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 24px;font-size:11.5px;margin-bottom:14px;">
-          <div style="padding:6px 0;border-bottom:1.5px solid #000;">1. _______________________</div>
-          <div style="padding:6px 0;border-bottom:1.5px solid #000;">6. _______________________</div>
-          <div style="padding:6px 0;border-bottom:1.5px solid #000;">2. _______________________</div>
-          <div style="padding:6px 0;border-bottom:1.5px solid #000;">7. _______________________</div>
-          <div style="padding:6px 0;border-bottom:1.5px solid #000;">3. _______________________</div>
-          <div style="padding:6px 0;border-bottom:1.5px solid #000;">8. _______________________</div>
-          <div style="padding:6px 0;border-bottom:1.5px solid #000;">4. _______________________</div>
-          <div style="padding:6px 0;border-bottom:1.5px solid #000;">9. _______________________</div>
-          <div style="padding:6px 0;border-bottom:1.5px solid #000;">5. _______________________</div>
-          <div style="padding:6px 0;border-bottom:1.5px solid #000;">10. ______________________</div>
-        </div>
-        <hr class="ws-divider">
-        <h3>❤ Heart Words from Memory</h3>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 24px;font-size:11.5px;">
-          <div style="padding:6px 0;border-bottom:1.5px solid #000;">11. ______________________</div>
-          <div style="padding:6px 0;border-bottom:1.5px solid #000;">13. ______________________</div>
-          <div style="padding:6px 0;border-bottom:1.5px solid #000;">12. ______________________</div>
-          <div style="padding:6px 0;border-bottom:1.5px solid #000;">14. ______________________</div>
-        </div>
-      </div>
-    </div>
-    </div> <!-- /slide -->
-
-    <!-- Slide 6: Day 3B — Write a Sentence -->
-    <div class="slide">
-    <div class="worksheet-preview">
-      <div class="preview-label">Day 3 — Page B: Write a Sentence</div>
-      <div class="ws">
-        <div class="ws-title">Spelling Words: -are, -air, -ear &nbsp;|&nbsp; Day 3 — Page B: Write a Sentence</div>
-        <h3>Write a Sentence</h3>
-        <p style="font-size:10px;font-style:italic;margin:0 0 12px;">Write a sentence for each word. Underline the word in your sentence.</p>
-        <div style="font-size:11.5px;">
-          <div style="margin-bottom:14px;">
-            <div style="font-weight:bold;margin-bottom:5px;">bear</div>
-            <div style="border-bottom:1px solid #000;height:22px;margin-bottom:6px;"></div>
-            <div style="border-bottom:1px solid #000;height:22px;"></div>
-          </div>
-          <div style="margin-bottom:14px;">
-            <div style="font-weight:bold;margin-bottom:5px;">fair</div>
-            <div style="border-bottom:1px solid #000;height:22px;margin-bottom:6px;"></div>
-            <div style="border-bottom:1px solid #000;height:22px;"></div>
-          </div>
-          <div style="margin-bottom:14px;">
-            <div style="font-weight:bold;margin-bottom:5px;">square</div>
-            <div style="border-bottom:1px solid #000;height:22px;margin-bottom:6px;"></div>
-            <div style="border-bottom:1px solid #000;height:22px;"></div>
-          </div>
-          <div style="margin-bottom:14px;">
-            <div style="font-weight:bold;margin-bottom:5px;">once</div>
-            <div style="border-bottom:1px solid #000;height:22px;margin-bottom:6px;"></div>
-            <div style="border-bottom:1px solid #000;height:22px;"></div>
-          </div>
-          <div>
-            <div style="font-weight:bold;margin-bottom:5px;">yellow</div>
-            <div style="border-bottom:1px solid #000;height:22px;margin-bottom:6px;"></div>
-            <div style="border-bottom:1px solid #000;height:22px;"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-    </div> <!-- /slide -->
-
-    <!-- Slide 7: Spelling Test -->
-    <div class="slide">
-    <div class="worksheet-preview">
-      <div class="preview-label">Spelling Test</div>
-      <div class="ws">
-        <div class="ws-title">SPELLING TEST &nbsp;|&nbsp; -are, -air, -ear Words</div>
-        <div style="display:flex;gap:24px;margin-bottom:16px;font-size:11.5px;">
-          <div>Name: ___________________________</div>
-          <div>Date: _______________</div>
-        </div>
-        <h3>Spelling Words</h3>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 32px;font-size:11.5px;margin:10px 0 16px;">
-          <div style="padding:6px 0;border-bottom:1.5px solid #000;">1. ______________________________</div>
-          <div style="padding:6px 0;border-bottom:1.5px solid #000;">6. ______________________________</div>
-          <div style="padding:6px 0;border-bottom:1.5px solid #000;">2. ______________________________</div>
-          <div style="padding:6px 0;border-bottom:1.5px solid #000;">7. ______________________________</div>
-          <div style="padding:6px 0;border-bottom:1.5px solid #000;">3. ______________________________</div>
-          <div style="padding:6px 0;border-bottom:1.5px solid #000;">8. ______________________________</div>
-          <div style="padding:6px 0;border-bottom:1.5px solid #000;">4. ______________________________</div>
-          <div style="padding:6px 0;border-bottom:1.5px solid #000;">9. ______________________________</div>
-          <div style="padding:6px 0;border-bottom:1.5px solid #000;">5. ______________________________</div>
-          <div style="padding:6px 0;border-bottom:1.5px solid #000;">10. _____________________________</div>
-        </div>
-        <hr class="ws-divider">
-        <h3>❤ Heart Words</h3>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 32px;font-size:11.5px;margin:10px 0 16px;">
-          <div style="padding:6px 0;border-bottom:1.5px solid #000;">11. _____________________________</div>
-          <div style="padding:6px 0;border-bottom:1.5px solid #000;">13. _____________________________</div>
-          <div style="padding:6px 0;border-bottom:1.5px solid #000;">12. _____________________________</div>
-          <div style="padding:6px 0;border-bottom:1.5px solid #000;">14. _____________________________</div>
-        </div>
-        <div style="text-align:right;font-size:13px;font-weight:bold;border-top:2px solid #000;padding-top:10px;">Score: _______ / 14</div>
-      </div>
-    </div>
-    </div> <!-- /slide -->
-
-    </div> <!-- /slideshow-track -->
-    </div> <!-- /slideshow-viewport -->
     <div class="slideshow-footer">
       <button class="slide-btn" id="slidePrev">&#8249;</button>
-      <div class="slide-dots">
-        <span class="dot active" data-index="0"></span>
-        <span class="dot" data-index="1"></span>
-        <span class="dot" data-index="2"></span>
-        <span class="dot" data-index="3"></span>
-        <span class="dot" data-index="4"></span>
-        <span class="dot" data-index="5"></span>
-        <span class="dot" data-index="6"></span>
-      </div>
+      <div class="slide-dots" id="slideDots"></div>
       <button class="slide-btn" id="slideNext">&#8250;</button>
     </div>
     </div> <!-- /slideshow -->
@@ -712,21 +383,61 @@
 </div>
 <script>
 (function () {
-  var track = document.getElementById('slideshowTrack');
-  var dots = document.querySelectorAll('.dot');
-  var total = dots.length;
-  var current = 0;
-  function goTo(n) {
-    current = (n + total) % total;
-    track.style.transform = 'translateX(-' + (current * 100) + '%)';
-    dots.forEach(function (d, i) { d.classList.toggle('active', i === current); });
+  var pdfUrl = '/blog/assets/spelling%20worksheets%204-25.pdf';
+  var pdfjsLib = window['pdfjs-dist/build/pdf'];
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+  var pdfDoc = null;
+  var current = 1;
+  var canvas = document.getElementById('pdfCanvas');
+  var ctx = canvas.getContext('2d');
+  var dotsEl = document.getElementById('slideDots');
+  var rendering = false;
+  var pending = null;
+
+  function renderPage(num) {
+    if (rendering) { pending = num; return; }
+    rendering = true;
+    pdfDoc.getPage(num).then(function (page) {
+      var vp = page.getViewport({ scale: 1 });
+      var scale = canvas.parentElement.clientWidth / vp.width;
+      var scaled = page.getViewport({ scale: scale });
+      canvas.width = scaled.width;
+      canvas.height = scaled.height;
+      page.render({ canvasContext: ctx, viewport: scaled }).promise.then(function () {
+        rendering = false;
+        if (pending !== null) { var p = pending; pending = null; renderPage(p); }
+      });
+    });
+    dotsEl.querySelectorAll('.dot').forEach(function (d, i) {
+      d.classList.toggle('active', i === num - 1);
+    });
   }
+
+  function goTo(n) {
+    current = Math.max(1, Math.min(n, pdfDoc ? pdfDoc.numPages : 1));
+    renderPage(current);
+  }
+
+  pdfjsLib.getDocument(pdfUrl).promise.then(function (pdf) {
+    pdfDoc = pdf;
+    for (var i = 0; i < pdf.numPages; i++) {
+      var dot = document.createElement('span');
+      dot.className = 'dot' + (i === 0 ? ' active' : '');
+      (function (pageNum) {
+        dot.addEventListener('click', function () { goTo(pageNum); });
+      })(i + 1);
+      dotsEl.appendChild(dot);
+    }
+    renderPage(1);
+  });
+
   document.getElementById('slidePrev').addEventListener('click', function () { goTo(current - 1); });
   document.getElementById('slideNext').addEventListener('click', function () { goTo(current + 1); });
-  dots.forEach(function (d) { d.addEventListener('click', function () { goTo(+d.dataset.index); }); });
+
   var startX = 0;
-  track.addEventListener('touchstart', function (e) { startX = e.touches[0].clientX; }, { passive: true });
-  track.addEventListener('touchend', function (e) {
+  canvas.addEventListener('touchstart', function (e) { startX = e.touches[0].clientX; }, { passive: true });
+  canvas.addEventListener('touchend', function (e) {
     var dx = e.changedTouches[0].clientX - startX;
     if (Math.abs(dx) > 40) goTo(current + (dx < 0 ? 1 : -1));
   }, { passive: true });
