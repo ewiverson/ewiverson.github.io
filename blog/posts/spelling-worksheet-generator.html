@@ -225,6 +225,50 @@
     border-top: 1.5px solid #000;
     margin: 14px 0;
   }
+
+  /* ── Slideshow ── */
+  .slideshow { margin: 32px 0; }
+  .slideshow-viewport {
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+  }
+  .slideshow-track {
+    display: flex;
+    transition: transform 0.3s ease;
+  }
+  .slide { flex: 0 0 100%; min-width: 0; }
+  .slideshow .worksheet-preview { margin: 0; border: none; border-radius: 0; }
+  .slideshow-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 12px;
+  }
+  .slide-btn {
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 20px;
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .slide-btn:hover { color: rgba(255, 255, 255, 0.8); border-color: rgba(255, 255, 255, 0.35); }
+  .slide-dots { display: flex; gap: 8px; align-items: center; }
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .dot.active { background: rgba(255, 255, 255, 0.6); }
 </style>
 </head>
 <body>
@@ -272,7 +316,11 @@
       ↓ spelling-worksheet-generator.zip
     </a>
 
-    <!-- Worksheet preview -->
+    <!-- Worksheet slideshow -->
+    <div class="slideshow">
+    <div class="slideshow-viewport">
+    <div class="slideshow-track" id="slideshowTrack">
+    <div class="slide">
     <div class="worksheet-preview">
       <div class="preview-label">Day 1 — Page A: Meet Your Words!</div>
       <div class="ws">
@@ -366,8 +414,9 @@
         </table>
       </div>
     </div>
-
-    <div class="worksheet-preview" style="margin-top:16px;">
+    </div> <!-- /slide -->
+    <div class="slide">
+    <div class="worksheet-preview">
       <div class="preview-label">Day 1 — Page B: Look, Cover, Write!</div>
       <div class="ws">
         <div class="ws-title">Spelling Words: -are, -air, -ear &nbsp;|&nbsp; Day 1 — Page B: Look, Cover, Write!</div>
@@ -416,8 +465,42 @@
         </div>
       </div>
     </div>
+    </div> <!-- /slide -->
+    </div> <!-- /slideshow-track -->
+    </div> <!-- /slideshow-viewport -->
+    <div class="slideshow-footer">
+      <button class="slide-btn" id="slidePrev">&#8249;</button>
+      <div class="slide-dots">
+        <span class="dot active" data-index="0"></span>
+        <span class="dot" data-index="1"></span>
+      </div>
+      <button class="slide-btn" id="slideNext">&#8250;</button>
+    </div>
+    </div> <!-- /slideshow -->
 
   </div>
 </div>
+<script>
+(function () {
+  var track = document.getElementById('slideshowTrack');
+  var dots = document.querySelectorAll('.dot');
+  var total = dots.length;
+  var current = 0;
+  function goTo(n) {
+    current = (n + total) % total;
+    track.style.transform = 'translateX(-' + (current * 100) + '%)';
+    dots.forEach(function (d, i) { d.classList.toggle('active', i === current); });
+  }
+  document.getElementById('slidePrev').addEventListener('click', function () { goTo(current - 1); });
+  document.getElementById('slideNext').addEventListener('click', function () { goTo(current + 1); });
+  dots.forEach(function (d) { d.addEventListener('click', function () { goTo(+d.dataset.index); }); });
+  var startX = 0;
+  track.addEventListener('touchstart', function (e) { startX = e.touches[0].clientX; }, { passive: true });
+  track.addEventListener('touchend', function (e) {
+    var dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) > 40) goTo(current + (dx < 0 ? 1 : -1));
+  }, { passive: true });
+})();
+</script>
 </body>
 </html>
