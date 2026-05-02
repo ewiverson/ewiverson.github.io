@@ -241,52 +241,36 @@
 
   <div class="content">
     <p>
-      My daughter is in first grade and her teacher sends home a new spelling list each week — ten words,
-      four heart words (sight words), Friday test. For a while I was making practice sheets by hand in
-      Google Docs. That got old fast. So I built a Claude skill that generates a full week of print-ready
-      worksheets from a word list in about thirty seconds.
-    </p>
-
-    <h2>What it does</h2>
-
-    <p>
-      You give Claude a list of spelling words and it produces a seven-page letter-sized PDF — two pages
-      per day for three days, plus a practice test. Each day builds in difficulty: Day 1 is recognition
-      and look-cover-write, Day 2 is fill-in-the-blank and circle-the-correct-spelling, Day 3 is full
-      write-from-memory. The test page has a score box and a cut-out reminder card.
+      I've got a whole album side on all the ways AI in education is going to go wrong, but one area I'm
+      interested in for my kids is personalized lesson planning. The science of learning and best practices
+      around learning are generally well understood: spaced repetition, Socratic method, and idea synthesis.
+      But most classrooms just aren't implementing the best version of the science because they need to
+      standardize their teaching to the whole room.
     </p>
     <p>
-      Everything prints in black and white. No gray, no color — just clean black strokes on white so it
-      looks decent on a home printer.
-    </p>
-
-    <h2>How it works</h2>
-
-    <p>
-      Claude Code has a feature called skills: Markdown files with instructions that tell the model how
-      to perform a specific task. This one is a <code>SKILL.md</code> paired with a small Node.js layout
-      engine. When you invoke it, Claude analyzes the word list phonetically, groups words by pattern,
-      generates black-and-white SVG illustrations for concrete nouns, writes a definition file, then runs
-      the engine via <code>node run.js</code> to produce the PDF using Playwright.
+      As part of being the change I want to see, I put an hour into trying to help my first grade daughter
+      do better on her spelling tests. She did so well in kindergarten on reading and writing, but they
+      focused entirely on phonics and so the spelling tests in first grade came in very hot. For the fall
+      semester I just hoped my daughter would come up to speed from the work she did in class. But I finally
+      knew I had to do something when she spelled <em>drawing</em> as "jroling". So now I sit with her in
+      the evenings a couple nights a week and do spelling practice. One on one time with any of my kids is
+      a luxury right now, so I enjoy the opportunity to sit with her and watch her spelling skills improve.
     </p>
     <p>
-      The layout engine works by declaring a page as a stack of "aids" — each one a fraction of the page
-      height. Font sizes are computed from pixel row heights automatically, so you never have to fiddle
-      with sizing manually. Add a new word list, run it, get a new PDF.
+      To help streamline our studying and get me as much one on one time with my daughter as I can, I made
+      this Claude skill to produce worksheets for us to go over. Here's the result below:
     </p>
-
-    <h2>Example invocation</h2>
-
-    <pre><code>Make spelling worksheets for my first grader.
-
-Spelling words: square, share, care, scare, chair, air, fair, pear, bear, wear
-Heart words: once, upon, yellow, live</code></pre>
 
     <p>
-      Claude groups these into <em>-are</em>, <em>-air</em>, and <em>-ear</em> phonetic families,
-      generates SVG drawings for the concrete nouns (bear, pear, chair, square), writes the full
-      seven-page definition, and runs the engine. Here's what Day 1 looks like:
+      The skill takes a word list, groups the words phonetically, generates SVG illustrations for concrete
+      nouns, and produces a week of print-ready worksheets — three practice days building in difficulty,
+      plus a test page. Everything prints in black and white. You'll need Node.js and Playwright, and a
+      copy of Claude Code. Drop the folder into your Claude skills directory and invoke it with a word list.
     </p>
+
+    <a class="download-link" href="/blog/assets/spelling-worksheet-generator.zip" download>
+      ↓ spelling-worksheet-generator.zip
+    </a>
 
     <!-- Worksheet preview -->
     <div class="worksheet-preview">
@@ -433,23 +417,6 @@ Heart words: once, upon, yellow, live</code></pre>
       </div>
     </div>
 
-    <h2>Getting the skill</h2>
-
-    <p>
-      The skill includes the layout engine, the runner, and the worked example definition. You'll need
-      Node.js and Playwright (<code>npm install playwright</code>). Drop the folder into your Claude
-      skills directory and it'll show up automatically.
-    </p>
-
-    <a class="download-link" href="/blog/assets/spelling-worksheet-generator.zip" download>
-      ↓ spelling-worksheet-generator.zip
-    </a>
-
-    <p>
-      The <code>SKILL.md</code> has the full workflow doc — it's what Claude reads to know how to drive
-      the engine. The <code>example_def.js</code> shows a complete seven-page definition for the
-      -are/-air/-ear word set used above, which is useful as a reference when something doesn't look right.
-    </p>
   </div>
 </div>
 </body>
