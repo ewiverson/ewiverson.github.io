@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spelling Worksheet Generator — Eric W Iverson</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0d1117;
+    color: rgba(255, 255, 255, 0.75);
+    font-family: system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    padding: 80px 24px;
+  }
+  .container {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+  header {
+    margin-bottom: 64px;
+  }
+  header a {
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    color: rgba(255, 255, 255, 0.35);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  header a:hover { color: rgba(255, 255, 255, 0.65); }
+  .post-meta {
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    color: rgba(255, 255, 255, 0.3);
+    margin-top: 32px;
+    margin-bottom: 6px;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+  .category {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+  h1 {
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    font-weight: 300;
+    letter-spacing: 0.06em;
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 48px;
+    line-height: 1.3;
+  }
+  .content p {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: rgba(255, 255, 255, 0.62);
+    margin-bottom: 24px;
+  }
+  .content h2 {
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.35);
+    margin-top: 52px;
+    margin-bottom: 20px;
+  }
+  .content code {
+    font-family: 'SF Mono', 'Consolas', 'Menlo', monospace;
+    font-size: 0.82em;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  .content pre {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    padding: 20px 24px;
+    margin: 24px 0;
+    overflow-x: auto;
+  }
+  .content pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 0.83rem;
+    line-height: 1.65;
+    color: rgba(255, 255, 255, 0.65);
+  }
+  .download-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    color: rgba(255, 255, 255, 0.55);
+    text-decoration: none;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 10px 18px;
+    border-radius: 4px;
+    transition: color 0.2s, border-color 0.2s;
+    margin: 8px 0 32px;
+  }
+  .download-link:hover {
+    color: rgba(255, 255, 255, 0.85);
+    border-color: rgba(255, 255, 255, 0.35);
+  }
+
+  /* ── Worksheet preview ── */
+  .worksheet-preview {
+    margin: 32px 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .preview-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.3);
+    padding: 10px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .ws {
+    background: #fff;
+    color: #000;
+    font-family: Arial, sans-serif;
+    padding: 20px 24px;
+  }
+  .ws-title {
+    background: #000;
+    color: #fff;
+    font-weight: bold;
+    font-size: 14px;
+    text-align: center;
+    padding: 7px 0;
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+  }
+  .ws h3 {
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-bottom: 2px solid #000;
+    padding-bottom: 4px;
+    margin-bottom: 10px;
+  }
+  .ws-groups {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .ws-group {
+    border: 1.5px solid #000;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .ws-group-header {
+    background: #000;
+    color: #fff;
+    font-size: 11px;
+    font-weight: bold;
+    text-align: center;
+    padding: 4px 6px;
+  }
+  .ws-group-rule {
+    font-size: 9.5px;
+    text-align: center;
+    padding: 3px 6px 5px;
+    border-bottom: 1px solid #000;
+    font-style: italic;
+  }
+  .ws-group-words {
+    padding: 6px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .ws-group-word {
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .ws-group-word svg {
+    flex-shrink: 0;
+  }
+  /* Look-cover-write */
+  .ws-lcw table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11.5px;
+  }
+  .ws-lcw th {
+    background: #000;
+    color: #fff;
+    font-size: 10px;
+    padding: 5px 8px;
+    text-align: left;
+    letter-spacing: 0.04em;
+  }
+  .ws-lcw td {
+    border: 1px solid #000;
+    padding: 5px 8px;
+    height: 28px;
+  }
+  .ws-lcw td:first-child {
+    font-weight: bold;
+    width: 22%;
+    white-space: nowrap;
+  }
+  .ws-divider {
+    border: none;
+    border-top: 1.5px solid #000;
+    margin: 14px 0;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <a href="/blog">← Blog</a>
+  </header>
+
+  <div class="post-meta">
+    <span>2026-05-02</span>
+    <span class="category">Personal Projects</span>
+  </div>
+  <h1>Building a Spelling Worksheet Generator as a Claude Skill</h1>
+
+  <div class="content">
+    <p>
+      My daughter is in first grade and her teacher sends home a new spelling list each week — ten words,
+      four heart words (sight words), Friday test. For a while I was making practice sheets by hand in
+      Google Docs. That got old fast. So I built a Claude skill that generates a full week of print-ready
+      worksheets from a word list in about thirty seconds.
+    </p>
+
+    <h2>What it does</h2>
+
+    <p>
+      You give Claude a list of spelling words and it produces a seven-page letter-sized PDF — two pages
+      per day for three days, plus a practice test. Each day builds in difficulty: Day 1 is recognition
+      and look-cover-write, Day 2 is fill-in-the-blank and circle-the-correct-spelling, Day 3 is full
+      write-from-memory. The test page has a score box and a cut-out reminder card.
+    </p>
+    <p>
+      Everything prints in black and white. No gray, no color — just clean black strokes on white so it
+      looks decent on a home printer.
+    </p>
+
+    <h2>How it works</h2>
+
+    <p>
+      Claude Code has a feature called skills: Markdown files with instructions that tell the model how
+      to perform a specific task. This one is a <code>SKILL.md</code> paired with a small Node.js layout
+      engine. When you invoke it, Claude analyzes the word list phonetically, groups words by pattern,
+      generates black-and-white SVG illustrations for concrete nouns, writes a definition file, then runs
+      the engine via <code>node run.js</code> to produce the PDF using Playwright.
+    </p>
+    <p>
+      The layout engine works by declaring a page as a stack of "aids" — each one a fraction of the page
+      height. Font sizes are computed from pixel row heights automatically, so you never have to fiddle
+      with sizing manually. Add a new word list, run it, get a new PDF.
+    </p>
+
+    <h2>Example invocation</h2>
+
+    <pre><code>Make spelling worksheets for my first grader.
+
+Spelling words: square, share, care, scare, chair, air, fair, pear, bear, wear
+Heart words: once, upon, yellow, live</code></pre>
+
+    <p>
+      Claude groups these into <em>-are</em>, <em>-air</em>, and <em>-ear</em> phonetic families,
+      generates SVG drawings for the concrete nouns (bear, pear, chair, square), writes the full
+      seven-page definition, and runs the engine. Here's what Day 1 looks like:
+    </p>
+
+    <!-- Worksheet preview -->
+    <div class="worksheet-preview">
+      <div class="preview-label">Day 1 — Page A: Meet Your Words!</div>
+      <div class="ws">
+        <div class="ws-title">Spelling Words: -are, -air, -ear &nbsp;|&nbsp; Day 1 — Page A: Meet Your Words!</div>
+
+        <h3>Word Groups</h3>
+        <div class="ws-groups">
+          <div class="ws-group">
+            <div class="ws-group-header">-are words</div>
+            <div class="ws-group-rule">a-r-e says /air/ like in "care"</div>
+            <div class="ws-group-words">
+              <div class="ws-group-word">
+                <svg width="28" height="28" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="16" y="16" width="48" height="48" fill="white" stroke="#000" stroke-width="5"/>
+                  <line x1="16" y1="16" x2="8" y2="8" stroke="#000" stroke-width="3"/>
+                  <line x1="64" y1="16" x2="72" y2="8" stroke="#000" stroke-width="3"/>
+                  <line x1="16" y1="64" x2="8" y2="72" stroke="#000" stroke-width="3"/>
+                  <line x1="64" y1="64" x2="72" y2="72" stroke="#000" stroke-width="3"/>
+                </svg>
+                square
+              </div>
+              <div class="ws-group-word">share</div>
+              <div class="ws-group-word">care</div>
+              <div class="ws-group-word">scare</div>
+              <div class="ws-group-word">
+                <svg width="28" height="28" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="18" y="44" width="44" height="24" rx="4" fill="white" stroke="#000" stroke-width="4"/>
+                  <line x1="28" y1="44" x2="24" y2="64" stroke="#000" stroke-width="3"/>
+                  <line x1="52" y1="44" x2="56" y2="64" stroke="#000" stroke-width="3"/>
+                  <ellipse cx="40" cy="36" rx="16" ry="12" fill="white" stroke="#000" stroke-width="4"/>
+                  <line x1="20" y1="40" x2="12" y2="52" stroke="#000" stroke-width="3"/>
+                  <line x1="60" y1="40" x2="68" y2="52" stroke="#000" stroke-width="3"/>
+                </svg>
+                chair
+              </div>
+            </div>
+          </div>
+          <div class="ws-group">
+            <div class="ws-group-header">-air words</div>
+            <div class="ws-group-rule">-air also says /air/ like "fair"</div>
+            <div class="ws-group-words">
+              <div class="ws-group-word">air</div>
+              <div class="ws-group-word">fair</div>
+            </div>
+          </div>
+          <div class="ws-group">
+            <div class="ws-group-header">-ear words</div>
+            <div class="ws-group-rule">-ear can say /air/ too! like "bear"</div>
+            <div class="ws-group-words">
+              <div class="ws-group-word">
+                <svg width="28" height="28" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="40" cy="46" r="24" fill="white" stroke="#000" stroke-width="4"/>
+                  <circle cx="22" cy="24" r="9" fill="white" stroke="#000" stroke-width="4"/>
+                  <circle cx="58" cy="24" r="9" fill="white" stroke="#000" stroke-width="4"/>
+                  <circle cx="33" cy="44" r="3" fill="#000"/>
+                  <circle cx="47" cy="44" r="3" fill="#000"/>
+                  <ellipse cx="40" cy="54" rx="7" ry="4" fill="white" stroke="#000" stroke-width="2.5"/>
+                </svg>
+                bear
+              </div>
+              <div class="ws-group-word">
+                <svg width="28" height="28" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+                  <ellipse cx="40" cy="48" rx="22" ry="18" fill="white" stroke="#000" stroke-width="4"/>
+                  <ellipse cx="40" cy="30" rx="14" ry="10" fill="white" stroke="#000" stroke-width="4"/>
+                  <line x1="30" y1="66" x2="26" y2="76" stroke="#000" stroke-width="3"/>
+                  <line x1="50" y1="66" x2="54" y2="76" stroke="#000" stroke-width="3"/>
+                </svg>
+                pear
+              </div>
+              <div class="ws-group-word">wear</div>
+            </div>
+          </div>
+        </div>
+
+        <hr class="ws-divider">
+
+        <h3>❤ Heart Words — Match the Meaning</h3>
+        <table style="width:100%;border-collapse:collapse;font-size:11.5px;">
+          <thead>
+            <tr>
+              <th style="background:#000;color:#fff;padding:5px 10px;text-align:left;width:25%;">Heart Word</th>
+              <th style="background:#000;color:#fff;padding:5px 10px;text-align:left;">What does it mean?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style="border:1px solid #000;padding:6px 10px;font-weight:bold;">once</td><td style="border:1px solid #000;padding:6px 10px;">one time only (Once upon a time…)</td></tr>
+            <tr><td style="border:1px solid #000;padding:6px 10px;font-weight:bold;">upon</td><td style="border:1px solid #000;padding:6px 10px;">on top of something</td></tr>
+            <tr><td style="border:1px solid #000;padding:6px 10px;font-weight:bold;">yellow</td><td style="border:1px solid #000;padding:6px 10px;">a bright sunny color</td></tr>
+            <tr><td style="border:1px solid #000;padding:6px 10px;font-weight:bold;">live</td><td style="border:1px solid #000;padding:6px 10px;">to be alive; where you call home</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="worksheet-preview" style="margin-top:16px;">
+      <div class="preview-label">Day 1 — Page B: Look, Cover, Write!</div>
+      <div class="ws">
+        <div class="ws-title">Spelling Words: -are, -air, -ear &nbsp;|&nbsp; Day 1 — Page B: Look, Cover, Write!</div>
+        <div class="ws-lcw">
+          <h3>Look, Cover, Write!</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Word</th>
+                <th>Write it</th>
+                <th>Write it again</th>
+                <th>One more time!</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>square</td><td></td><td></td><td></td></tr>
+              <tr><td>share</td><td></td><td></td><td></td></tr>
+              <tr><td>care</td><td></td><td></td><td></td></tr>
+              <tr><td>scare</td><td></td><td></td><td></td></tr>
+              <tr><td>chair</td><td></td><td></td><td></td></tr>
+              <tr><td>air</td><td></td><td></td><td></td></tr>
+              <tr><td>fair</td><td></td><td></td><td></td></tr>
+              <tr><td>pear</td><td></td><td></td><td></td></tr>
+              <tr><td>bear</td><td></td><td></td><td></td></tr>
+              <tr><td>wear</td><td></td><td></td><td></td></tr>
+            </tbody>
+          </table>
+          <hr class="ws-divider" style="margin:12px 0 10px;">
+          <h3>❤ Heart Words — Look, Cover, Write!</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Word</th>
+                <th>Write it</th>
+                <th>Write it again</th>
+                <th>One more time!</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>once</td><td></td><td></td><td></td></tr>
+              <tr><td>upon</td><td></td><td></td><td></td></tr>
+              <tr><td>yellow</td><td></td><td></td><td></td></tr>
+              <tr><td>live</td><td></td><td></td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <h2>Getting the skill</h2>
+
+    <p>
+      The skill includes the layout engine, the runner, and the worked example definition. You'll need
+      Node.js and Playwright (<code>npm install playwright</code>). Drop the folder into your Claude
+      skills directory and it'll show up automatically.
+    </p>
+
+    <a class="download-link" href="/blog/assets/spelling-worksheet-generator.zip" download>
+      ↓ spelling-worksheet-generator.zip
+    </a>
+
+    <p>
+      The <code>SKILL.md</code> has the full workflow doc — it's what Claude reads to know how to drive
+      the engine. The <code>example_def.js</code> shows a complete seven-page definition for the
+      -are/-air/-ear word set used above, which is useful as a reference when something doesn't look right.
+    </p>
+  </div>
+</div>
+</body>
+</html>
