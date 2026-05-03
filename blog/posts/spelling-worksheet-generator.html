@@ -369,18 +369,13 @@
       look a little janky but I'm impressed it can do anything at all!
     </p>
     <p>
-      The other roadblock was I noticed that the fill in the blank sentences occasionally made no sense, e.g.
-      "The <em>_(wild)_</em> howled in the night". This is actually exposing the underlying mechanism of how
-      large language models work. The models essentially have a hierarchical structure of how words, sentences,
-      and paragraphs tend to be put together. But it's quite a fragile system and has a very hard time breaking
-      the paradigm of sentence generation for communication of concepts. For example, for many years LLMs were
-      famously bad at answering the question "How many R's are in the word strawberry". It's because strawberry
-      is represented in the LLM's "mind" as a single token which relates to other words and concepts that are
-      connected to strawberries in its training data. Similarly, when I ask it to generate a sentence about the
-      word "wild" but with a blank for the word wild, the LLM has trouble generating a sentence that makes
-      sense. The solution here was to have the LLM first generate a natural, age appropriate sentence featuring
-      the word, and then apply a function to find and replace the word with "____". Now, the sentences flow
-      much better because we're using the LLM the way it's meant to work.
+      The other roadblock was that the fill-in-the-blank sentences occasionally made no sense, e.g.
+      "The <em>_(wild)_</em> howled in the night". This reveals something fundamental about how LLMs work:
+      they generate text by predicting the next most likely token based on everything that came before. They
+      were trained on natural prose, not on sentences with blanks in them, so asking one to write around a
+      missing word puts it outside its training distribution. The fix was simple: have the LLM write a natural,
+      age-appropriate sentence first, then replace the target word with "____". That way we're using the model
+      the way it was designed to work.
     </p>
 
     <a class="download-link" href="/blog/assets/spelling-worksheet-generator.zip" download>
